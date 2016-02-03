@@ -77,9 +77,9 @@ RUN mv composer.phar /usr/local/bin/composer
 # RUN printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.profile
 
 # install laravel
-RUN composer global require "laravel/envoy=~1.0"
-RUN composer global require "laravel/installer=~1.1"
-RUN composer global require "laravel/lumen-installer=~1.0"
+RUN composer global require "laravel/envoy"
+RUN composer global require "laravel/installer"
+RUN composer global require "laravel/lumen-installer"
 
 # install nginx and php-fpm
 RUN apt-get install -y --force-yes nginx 
