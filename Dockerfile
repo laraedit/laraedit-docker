@@ -79,7 +79,7 @@ RUN mv composer.phar /usr/local/bin/composer
 # install laravel
 RUN composer global require "laravel/envoy"
 RUN composer global require "laravel/installer"
-RUN composer global require "laravel/lumen-installer"
+# RUN composer global require "laravel/lumen-installer"
 
 # install nginx and php-fpm
 RUN apt-get install -y --force-yes nginx 
