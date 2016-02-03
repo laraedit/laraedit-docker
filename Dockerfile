@@ -31,6 +31,7 @@ RUN apt-get install -y whois
 RUN apt-get install -y vim 
 RUN apt-get install -y libnotify-bin
 RUN apt-get install -y nano
+RUN apt-get install -y wget
 
 # install ppas
 RUN apt-add-repository ppa:nginx/development -y
