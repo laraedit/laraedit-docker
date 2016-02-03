@@ -17,9 +17,9 @@ VOLUME ["/var/log/supervisor"]
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # install nginx
-VOLUME ["/var/cache/nginx"]
-VOLUME ["/var/log/nginx"]
-EXPOSE 80 443
+# VOLUME ["/var/cache/nginx"]
+# VOLUME ["/var/log/nginx"]
+# EXPOSE 80 443
 
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
