@@ -47,6 +47,8 @@ RUN composer global require "laravel/installer"
 # RUN service hhvm start
 # RUN update-rc.d hhvm defaults
 
+# install mysql
+
 # install openssh
 RUN apt-get install -y openssh-server
 RUN mkdir -p /var/run/sshd
