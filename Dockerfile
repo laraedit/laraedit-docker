@@ -7,7 +7,7 @@ RUN export DEBIAN_FRONTEND=noninteractive
 
 # update ubuntu
 COPY update.sh /provision/update.sh
-RUN sh /pprovision/update.sh
+RUN sh /provision/update.sh
 
 # force locale
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale
