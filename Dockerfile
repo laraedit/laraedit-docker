@@ -6,49 +6,12 @@ ENV APP_NAME app
 RUN export DEBIAN_FRONTEND=noninteractive
 
 # update ubuntu
-RUN apt-get update
-RUN apt-get upgrade -y
+COPY update.sh /provision/update.sh
+RUN sh /pprovision/update.sh
 
 # force locale
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale
 RUN locale-gen en_US.UTF-8
-
-# install basic packages
-RUN apt-get install -y software-properties-common 
-RUN apt-get install -y curl
-RUN apt-get install -y build-essential 
-RUN apt-get install -y dos2unix 
-RUN apt-get install -y gcc 
-RUN apt-get install -y git 
-RUN apt-get install -y libmcrypt4 
-RUN apt-get install -y libpcre3-dev
-RUN apt-get install -y make 
-RUN apt-get install -y python2.7-dev 
-RUN apt-get install -y python-pip 
-RUN apt-get install -y re2c 
-RUN apt-get install -y unattended-upgrades 
-RUN apt-get install -y whois 
-RUN apt-get install -y vim 
-RUN apt-get install -y libnotify-bin
-RUN apt-get install -y nano
-RUN apt-get install -y wget
-
-# install ppas
-RUN apt-add-repository ppa:nginx/development -y
-RUN apt-add-repository ppa:rwky/redis -y
-RUN apt-add-repository ppa:ondrej/php-7.0 -y
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 5072E1F5
-RUN sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7" >> /etc/apt/sources.list.d/mysql.list'
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/postgresql.list'
-RUN curl -s https://packagecloud.io/gpg.key | apt-key add -
-RUN echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list
-RUN curl --silent --location https://deb.nodesource.com/setup_5.x | bash -
-RUN wget -O - http://dl.hhvm.com/conf/hhvm.gpg.key | apt-key add -
-RUN echo deb http://dl.hhvm.com/ubuntu trusty main | tee /etc/apt/sources.list.d/hhvm.list
-
-# update package lists
-RUN apt-get update
 
 # set timezone
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
@@ -68,7 +31,7 @@ RUN apt-get install -y --force-yes php7.0-readline
 RUN apt-get install -y --force-yes php-xdebug
 RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini
 RUN sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini
-RUN sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/cli/php.ini
+# RUN sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/cli/php.ini
 RUN sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini
 
 # install composer
@@ -84,13 +47,13 @@ RUN composer global require "laravel/installer"
 # install nginx and php-fpm
 RUN apt-get install -y --force-yes nginx 
 RUN apt-get install -y --force-yes php7.0-fpm
-RUN rm /etc/nginx/sites-enabled/default
-RUN rm /etc/nginx/sites-available/default
+# RUN rm /etc/nginx/sites-enabled/default
+# RUN rm /etc/nginx/sites-available/default
 RUN service nginx restart
 RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/fpm/php.ini
 RUN sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/fpm/php.ini
 RUN sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini
-RUN sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/fpm/php.ini
+# RUN sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/fpm/php.ini
 RUN sed -i "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php/7.0/fpm/php.ini
 RUN sed -i "s/post_max_size = .*/post_max_size = 100M/" /etc/php/7.0/fpm/php.ini
 RUN sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/fpm/php.ini
