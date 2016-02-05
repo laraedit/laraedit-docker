@@ -51,3 +51,6 @@ fastcgi_param	SERVER_NAME		\$server_name;
 fastcgi_param	HTTPS			\$https if_not_empty;
 fastcgi_param	REDIRECT_STATUS		200;
 EOF
+
+service nginx restart
+service php7.0-fpm restart
