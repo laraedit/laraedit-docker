@@ -19,7 +19,7 @@ RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 # install nginx
 COPY nginx.sh /provision/nginx.sh
 RUN sh /provision/nginx.sh
-VOLUME ["/usr/share/nginx/html/$APP_NAME"]
+VOLUME ["/var/www/html/$APP_NAME"]
 VOLUME ["/var/cache/nginx"]
 VOLUME ["/var/log/nginx"]
 EXPOSE 80 443
