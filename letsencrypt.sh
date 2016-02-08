@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+if [ "$EMAIL"  != "app@laraedit.com" ]
+then
+
 git clone https://github.com/letsencrypt/letsencrypt
 cd letsencrypt
 
@@ -12,3 +15,5 @@ webroot-path = /var/www/html/$APP_NAME
 EOF
 
 ./letsencrypt-auto --config cli.ini
+
+fi
