@@ -2,6 +2,8 @@ FROM ubuntu:14.04
 MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 ENV APP_NAME app
+ENV EMAIL app@laraedit.com
+ENV DOMAIN app.dev
 
 RUN export DEBIAN_FRONTEND=noninteractive
 
@@ -48,6 +50,10 @@ RUN composer global require "laravel/installer"
 # RUN update-rc.d hhvm defaults
 
 # install mysql
+
+# install letsencrypt
+COPY letsencrypt.sh /provision/letsencrypt.sh
+RUN sh /provision/letsencrypt.sh
 
 # install openssh
 RUN apt-get install -y openssh-server
