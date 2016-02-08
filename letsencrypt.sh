@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-if [ "$EMAIL"  != "app@laraedit.com" ]
-then
+if [[ "$EMAIL" != "app@laraedit.com" && "$DOMAIN" != "app.dev" ]]; then
 
 git clone https://github.com/letsencrypt/letsencrypt
 cd letsencrypt
