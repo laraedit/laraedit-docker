@@ -52,8 +52,8 @@ RUN composer global require "laravel/installer"
 # install mysql
 
 # install letsencrypt
-COPY letsencrypt.sh /provision/letsencrypt.sh
-RUN sh /provision/letsencrypt.sh
+# COPY letsencrypt.sh /provision/letsencrypt.sh
+# RUN sh /provision/letsencrypt.sh
 
 # install openssh
 RUN apt-get install -y openssh-server
