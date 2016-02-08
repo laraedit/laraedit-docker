@@ -2,8 +2,8 @@ FROM ubuntu:14.04
 MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 ENV APP_NAME app
-ENV EMAIL app@laraedit.com
-ENV DOMAIN app.dev
+ENV APP_EMAIL app@laraedit.com
+ENV APP_DOMAIN app.dev
 
 RUN export DEBIAN_FRONTEND=noninteractive
 
