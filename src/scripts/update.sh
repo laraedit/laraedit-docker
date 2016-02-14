@@ -24,6 +24,7 @@ apt-get install -y vim
 apt-get install -y libnotify-bin
 apt-get install -y nano
 apt-get install -y wget
+apt-get install -y debconf-utils
 
 # install ppas
 apt-add-repository ppa:nginx/development -y
