@@ -7,66 +7,56 @@ ENV APP_DOMAIN app.dev
 
 RUN export DEBIAN_FRONTEND=noninteractive
 
+# import provisioning files
+COPY src/ /provision/
+
 # update ubuntu
-COPY update.sh /provision/update.sh
-RUN sh /provision/update.sh
+RUN sh /provision/scripts/update.sh
 
 # install nginx
-COPY nginx.sh /provision/nginx.sh
-RUN sh /provision/nginx.sh
+RUN sh /provision/scripts/nginx.sh
 VOLUME ["/var/www/html/$APP_NAME"]
 VOLUME ["/var/cache/nginx"]
 VOLUME ["/var/log/nginx"]
 EXPOSE 80 443
 
 # install php
-COPY php.sh /provision/php.sh
-RUN sh /provision/php.sh
+RUN sh /provision/scripts/php.sh
 RUN service nginx restart
 EXPOSE 9000
 
 # install composer
-COPY composer.sh /provision/composer.sh
-RUN sh /provision/composer.sh
+RUN sh /provision/scripts/composer.sh
 VOLUME ["~/.composer"]
 
 # install hhvm
-# COPY hhvm.sh /provision/hhvm.sh
-# RUN sh /provision/hhvm.sh
+RUN sh /provision/scripts/hhvm.sh
 
 # install mysql
-# COPY mysql.sh /provision/mysql.sh
-# RUN sh /provision/mysql.sh
-# EXPOSE 3006
+RUN sh /provision/scripts/mysql.sh
+EXPOSE 3306
 
 # install sqlite
-# COPY sqlite.sh /provision/sqlite.sh
-# RUN sh /provision/sqlite.sh
+RUN sh /provision/scripts/sqlite.sh
 
 # install beanstalkd
-# COPY beanstalkd.sh /provision/beanstalkd.sh
-# RUN sh /provision/beanstalkd.sh
+RUN sh /provision/scripts/beanstalkd.sh
 
 # install postgresql
-# COPY postgresql.sh /provision/postgresql.sh
-# RUN sh /provision/postgresql.sh
+RUN sh /provision/scripts/postgresql.sh
 
 # install redis
-# COPY redis.sh /provision/redis.sh
-# RUN sh /provision/redis.sh
-# EXPOSE 6379
+RUN sh /provision/scripts/redis.sh
+EXPOSE 6379
 
 # install nodejs
-# COPY nodejs.sh /provision/nodejs.sh
-# RUN sh /provision/nodejs.sh
+RUN sh /provision/scripts/nodejs.sh
 
 # install blackfire
-# COPY blackfire.sh /provision/blackfire.sh
-# RUN sh /provision/blackfire.sh
+RUN sh /provision/scripts/blackfire.sh
 
 # install letsencrypt
-# COPY letsencrypt.sh /provision/letsencrypt.sh
-# RUN sh /provision/letsencrypt.sh
+# RUN sh /provision/scripts/letsencrypt.sh
 
 # install openssh
 RUN apt-get install -y openssh-server
@@ -77,7 +67,7 @@ EXPOSE 22
 RUN apt-get install -y supervisor
 RUN mkdir -p /var/log/supervisor
 VOLUME ["/var/log/supervisor"]
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
