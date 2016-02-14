@@ -71,8 +71,5 @@ RUN ln -s /provision/config/supervisord.conf /etc/supervisor/conf.d/supervisord.
 
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
-RUN dd if=/dev/zero of=/EMPTY bs=1M
-RUN rm -f /EMPTY
-RUN sync
 
 CMD ["/usr/bin/supervisord"]
