@@ -30,30 +30,30 @@ RUN sh /provision/scripts/composer.sh
 VOLUME ["~/.composer"]
 
 # install hhvm
-RUN sh /provision/scripts/hhvm.sh
+# RUN sh /provision/scripts/hhvm.sh
 
 # install mysql
-RUN sh /provision/scripts/mysql.sh
-EXPOSE 3306
+# RUN sh /provision/scripts/mysql.sh
+# EXPOSE 3306
 
 # install sqlite
-RUN sh /provision/scripts/sqlite.sh
+# RUN sh /provision/scripts/sqlite.sh
 
 # install beanstalkd
-RUN sh /provision/scripts/beanstalkd.sh
+# RUN sh /provision/scripts/beanstalkd.sh
 
 # install postgresql
-RUN sh /provision/scripts/postgresql.sh
+# RUN sh /provision/scripts/postgresql.sh
 
 # install redis
-RUN sh /provision/scripts/redis.sh
-EXPOSE 6379
+# RUN sh /provision/scripts/redis.sh
+# EXPOSE 6379
 
 # install nodejs
-RUN sh /provision/scripts/nodejs.sh
+# RUN sh /provision/scripts/nodejs.sh
 
 # install blackfire
-RUN sh /provision/scripts/blackfire.sh
+# RUN sh /provision/scripts/blackfire.sh
 
 # install letsencrypt
 # RUN sh /provision/scripts/letsencrypt.sh
@@ -67,7 +67,7 @@ EXPOSE 22
 RUN apt-get install -y supervisor
 RUN mkdir -p /var/log/supervisor
 VOLUME ["/var/log/supervisor"]
-# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN ln -s /provision/config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
