@@ -13,6 +13,7 @@ apt-get install -y gcc
 apt-get install -y git
 apt-get install -y libmcrypt4
 apt-get install -y libpcre3-dev
+apt-get install -y memcached
 apt-get install -y make
 apt-get install -y python2.7-dev
 apt-get install -y python-pip
@@ -52,3 +53,8 @@ locale-gen en_US.UTF-8
 
 # set timezone
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+# enable swap
+/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+/sbin/mkswap /var/swap.1
+/sbin/swapon /var/swap.1

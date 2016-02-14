@@ -39,6 +39,14 @@ VOLUME ["~/.composer"]
 # RUN sh /provision/mysql.sh
 # EXPOSE 3006
 
+# install sqlite
+# COPY sqlite.sh /provision/sqlite.sh
+# RUN sh /provision/sqlite.sh
+
+# install beanstalkd
+# COPY beanstalkd.sh /provision/beanstalkd.sh
+# RUN sh /provision/beanstalkd.sh
+
 # install postgresql
 # COPY postgresql.sh /provision/postgresql.sh
 # RUN sh /provision/postgresql.sh
@@ -73,5 +81,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # clean up
 RUN rm -rf /var/lib/apt/lists/*
+RUN dd if=/dev/zero of=/EMPTY bs=1M
+RUN rm -f /EMPTY
+RUN sync
 
 CMD ["/usr/bin/supervisord"]
