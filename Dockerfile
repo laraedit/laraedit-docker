@@ -30,30 +30,30 @@ RUN sh /provision/scripts/composer.sh
 VOLUME ["~/.composer"]
 
 # install hhvm
-# RUN sh /provision/scripts/hhvm.sh
+RUN sh /provision/scripts/hhvm.sh
 
 # install mysql
-# RUN sh /provision/scripts/mysql.sh
-# EXPOSE 3306
+RUN sh /provision/scripts/mysql.sh
+EXPOSE 3306
 
 # install sqlite
-# RUN sh /provision/scripts/sqlite.sh
+RUN sh /provision/scripts/sqlite.sh
 
 # install beanstalkd
-# RUN sh /provision/scripts/beanstalkd.sh
+RUN sh /provision/scripts/beanstalkd.sh
 
 # install postgresql
 # RUN sh /provision/scripts/postgresql.sh
 
 # install redis
-# RUN sh /provision/scripts/redis.sh
-# EXPOSE 6379
+RUN sh /provision/scripts/redis.sh
+EXPOSE 6379
 
 # install nodejs
-# RUN sh /provision/scripts/nodejs.sh
+RUN sh /provision/scripts/nodejs.sh
 
 # install blackfire
-# RUN sh /provision/scripts/blackfire.sh
+RUN sh /provision/scripts/blackfire.sh
 
 # install letsencrypt
 # RUN sh /provision/scripts/letsencrypt.sh

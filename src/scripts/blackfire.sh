@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-# Install Blackfire
+# install blackfire
 apt-get install -y blackfire-agent blackfire-php
