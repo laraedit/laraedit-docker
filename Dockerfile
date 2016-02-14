@@ -11,13 +11,6 @@ RUN export DEBIAN_FRONTEND=noninteractive
 COPY update.sh /provision/update.sh
 RUN sh /provision/update.sh
 
-# force locale
-RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale
-RUN locale-gen en_US.UTF-8
-
-# set timezone
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-
 # install nginx
 COPY nginx.sh /provision/nginx.sh
 RUN sh /provision/nginx.sh
@@ -33,23 +26,35 @@ RUN service nginx restart
 EXPOSE 9000
 
 # install composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
-# RUN printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.profile
-
-# install laravel
-RUN composer global require "laravel/envoy"
-RUN composer global require "laravel/installer"
-# RUN composer global require "laravel/lumen-installer"
+COPY composer.sh /provision/composer.sh
+RUN sh /provision/composer.sh
+VOLUME ["~/.composer"]
 
 # install hhvm
-# RUN apt-get install -y hhvm
-# RUN service hhvm stop
-# RUN sed -i 's/#RUN_AS_USER="www-data"/RUN_AS_USER="vagrant"/' /etc/default/hhvm
-# RUN service hhvm start
-# RUN update-rc.d hhvm defaults
+# COPY hhvm.sh /provision/hhvm.sh
+# RUN sh /provision/hhvm.sh
 
 # install mysql
+# COPY mysql.sh /provision/mysql.sh
+# RUN sh /provision/mysql.sh
+# EXPOSE 3006
+
+# install postgresql
+# COPY postgresql.sh /provision/postgresql.sh
+# RUN sh /provision/postgresql.sh
+
+# install redis
+# COPY redis.sh /provision/redis.sh
+# RUN sh /provision/redis.sh
+# EXPOSE 6379
+
+# install nodejs
+# COPY nodejs.sh /provision/nodejs.sh
+# RUN sh /provision/nodejs.sh
+
+# install blackfire
+# COPY blackfire.sh /provision/blackfire.sh
+# RUN sh /provision/blackfire.sh
 
 # install letsencrypt
 # COPY letsencrypt.sh /provision/letsencrypt.sh
