@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 # install mysql
 debconf-set-selections <<< "mysql-community-server mysql-community-server/data-dir select ''"
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password secret"
