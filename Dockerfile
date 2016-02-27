@@ -33,8 +33,8 @@ VOLUME ["~/.composer"]
 RUN sh /provision/scripts/hhvm.sh
 
 # install mysql
-RUN sh /provision/scripts/mysql.sh
-EXPOSE 3306
+# RUN sh /provision/scripts/mysql.sh
+# EXPOSE 3306
 
 # install sqlite
 RUN sh /provision/scripts/sqlite.sh
