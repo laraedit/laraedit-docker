@@ -13,5 +13,8 @@ apt-get install -y --force-yes nginx
 # sed -i "s/listen\.group.*/listen.group = vagrant/" /etc/php/7.0/fpm/pool.d/www.conf
 # sed -i "s/;listen\.mode.*/listen.mode = 0666/" /etc/php/7.0/fpm/pool.d/www.conf
 
+mv /provision/config/homestead /etc/nginx/sites-enabled/
+ln -fs "/etc/nginx/sites-available/homestead" "/etc/nginx/sites-enabled/homestead"
+
 # service nginx restart
 # service php7.0-fpm restart
