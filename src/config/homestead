@@ -2,7 +2,7 @@ server {
 
     listen 80;
     
-    server_name $APP_DOMAIN;
+    server_name localhost;
     root /var/www/html/app/public;
     index index.html index.htm index.php;
     charset utf-8;
