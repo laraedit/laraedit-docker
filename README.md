@@ -2,7 +2,8 @@
 Dockerized version of Laravel Homestead
 
 ```
-This container is a work in progress and is not yet fully functional. I will remove this message when this container is safe to use.
+This container is a work in progress and is not yet fully functional. I will 
+remove this message when this container is safe to use.
 ```
 
 # Documentation
