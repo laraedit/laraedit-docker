@@ -27,7 +27,6 @@ EXPOSE 9000
 
 # install composer
 RUN sh /provision/scripts/composer.sh
-VOLUME ["~/.composer"]
 
 # install hhvm
 RUN sh /provision/scripts/hhvm.sh
