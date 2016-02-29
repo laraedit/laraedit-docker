@@ -16,5 +16,7 @@ apt-get install -y --force-yes nginx
 mv /provision/config/homestead /etc/nginx/sites-available/
 ln -fs "/etc/nginx/sites-available/homestead" "/etc/nginx/sites-enabled/homestead"
 
+usermod -u 1000 www-data
+
 # service nginx restart
 # service php7.0-fpm restart
