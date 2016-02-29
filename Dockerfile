@@ -4,8 +4,7 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
-
-RUN export DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
 # import provisioning files
 COPY src/ /provision/
@@ -69,6 +68,14 @@ VOLUME ["/var/log/supervisor"]
 RUN ln -s /provision/config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # clean up
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get remove --purge -y software-properties-common && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    apt-get autoclean && \
+    echo -n > /var/lib/apt/extended_states && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/share/man/?? && \
+    rm -rf /usr/share/man/??_*
 
+ENTRYPOINT ["/bin/bash","-c"]
 CMD ["/usr/bin/supervisord"]
