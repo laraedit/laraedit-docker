@@ -78,4 +78,4 @@ RUN apt-get remove --purge -y software-properties-common && \
     rm -rf /usr/share/man/??_*
 
 ENTRYPOINT ["/bin/bash","-c"]
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord","-c","/etc/supervisor/conf.d/supervisord.conf"]
