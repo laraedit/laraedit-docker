@@ -18,11 +18,11 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 - [x] SQLite
 - [x] MySQL 5.7
 - [ ] Redis
-- [ ] NodeJS
+- [x] NodeJS
 - [ ] PostreSQL
 - [ ] Blackfire
-- [ ] Bower
-- [ ] Gulp
+- [x] Bower
+- [x] Gulp
 - [x] Composer
 - [x] Laravel Envoy
 - [x] Laravel Installer
