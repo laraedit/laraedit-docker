@@ -33,6 +33,7 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
   1. Search for `LaraEdit`
   2. Create LaraEdit container
   3. Point the `/var/www/html/app` volume to your local application directory.
+
 ### CLI (the other easy way)
   - 1. Pull in the image
   ```
