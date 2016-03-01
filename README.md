@@ -17,10 +17,11 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 - [x] PHP 7.0
 - [x] SQLite
 - [x] MySQL 5.7
-- [ ] Redis
+- [x] Redis
 - [x] NodeJS
 - [ ] PostreSQL
-- [ ] Blackfire
+- [ ] Beanstalkd
+- [x] Blackfire
 - [x] Bower
 - [x] Gulp
 - [x] Composer
