@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
     apt-get upgrade -y
 
-# install some pre-requisites
+# install some prerequisites
 RUN apt-get install -y software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
