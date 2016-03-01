@@ -5,6 +5,7 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
+ENV DB_PASS secret
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
@@ -82,14 +83,11 @@ RUN phpenmod mcrypt && \
 RUN apt-get install -y sqlite3 libsqlite3-dev
 
 # install mysql 
-RUN debconf-set-selections <<< "mysql-community-server mysql-community-server/data-dir select ''" && \
-    debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password secret" && \
-    debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password secret" && \
+RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set-selections;\
+    echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
-    mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
-    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=root --password=secret mysql
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
 EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
