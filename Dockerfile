@@ -91,7 +91,7 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
-    mysql --user="root" --password="$DB_PASS" -e "CREATE DATABASE $DB_NAME;"
+    echo "CREATE DATABASE $DB_NAME;" | mysql -uroot -p$DB_PASS
 EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
