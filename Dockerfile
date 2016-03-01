@@ -5,6 +5,7 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
+ENV DB_PASS secret
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
@@ -77,6 +78,18 @@ RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/ph
 COPY fastcgi_params /etc/nginx/
 RUN phpenmod mcrypt && \
     mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
+
+# install sqlite 
+RUN apt-get install -y sqlite3 libsqlite3-dev
+
+# install mysql 
+RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set-selections;\
+    echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
+    apt-get install -y mysql-server && \
+    echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+EXPOSE 3306
+VOLUME ["/var/lib/mysql"]
 
 # install supervisor
 RUN apt-get install -y supervisor && \
