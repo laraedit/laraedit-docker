@@ -78,6 +78,19 @@ COPY fastcgi_params /etc/nginx/
 RUN phpenmod mcrypt && \
     mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
 
+# install sqlite 
+RUN apt-get install -y sqlite3 libsqlite3-dev
+
+# install mysql 
+RUN debconf-set-selections <<< "mysql-community-server mysql-community-server/data-dir select ''" && \
+    debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password secret" && \
+    debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password secret" && \
+    apt-get install -y mysql-server && \
+    echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
+    mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=root --password=secret mysql
+
 # install supervisor
 RUN apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor
