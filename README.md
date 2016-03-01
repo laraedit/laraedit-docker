@@ -16,16 +16,16 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 - [x] Nginx 1.8.1
 - [x] PHP 7.0
 - [x] SQLite
-- [ ] MySQL 5.7
+- [x] MySQL 5.7
 - [ ] Redis
 - [ ] NodeJS
 - [ ] PostreSQL
 - [ ] Blackfire
 - [ ] Bower
 - [ ] Gulp
-- [ ] Composer
-- [ ] Laravel Envoy
-- [ ] Laravel Installer
+- [x] Composer
+- [x] Laravel Envoy
+- [x] Laravel Installer
 - [ ] Lumen Installer
 
 # How to use the container
