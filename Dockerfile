@@ -94,13 +94,25 @@ VOLUME ["/var/lib/mysql"]
 # install composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
-    printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.profile
+    printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc
 
 # install laravel envoy
 RUN composer global require "laravel/envoy"
 
 #install laravel installer
 RUN composer global require "laravel/installer"
+
+# install nodejs
+RUN apt-get install -y nodejs
+
+# install gulp
+RUN /usr/bin/npm install -g gulp
+
+# install bower
+RUN /usr/bin/npm install -g bower
+
+# install redis 
+RUN apt-get install -y redis-server
 
 # install supervisor
 RUN apt-get install -y supervisor && \
