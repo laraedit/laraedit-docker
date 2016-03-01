@@ -5,7 +5,10 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
+
+ENV DB_NAME app
 ENV DB_PASS secret
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
@@ -87,7 +90,8 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
+    mysql --user="root" --password="$DB_PASS" -e "CREATE DATABASE $DB_NAME;"
 EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
@@ -109,11 +113,14 @@ RUN apt-get install -y nodejs
 RUN /usr/bin/npm install -g gulp
 
 # install bower
-RUN /usr/bin/npm install -g bower && \
-    echo 'alias bower="bower --allow-root"' | tee -a ~/.bashrc
+RUN /usr/bin/npm install -g bower
 
 # install redis 
 RUN apt-get install -y redis-server
+EXPOSE 6379
+
+# install blackfire
+RUN apt-get install -y blackfire-agent blackfire-php
 
 # install supervisor
 RUN apt-get install -y supervisor && \
