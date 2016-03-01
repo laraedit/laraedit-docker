@@ -90,6 +90,8 @@ RUN debconf-set-selections <<< "mysql-community-server mysql-community-server/da
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
     mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
     mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=root --password=secret mysql
+EXPOSE 3306
+VOLUME ["/var/lib/mysql"]
 
 # install supervisor
 RUN apt-get install -y supervisor && \
