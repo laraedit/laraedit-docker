@@ -5,14 +5,17 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
+
+ENV DB_NAME app
 ENV DB_PASS secret
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
 RUN apt-get update && \
     apt-get upgrade -y
 
-# install some pre-requisites
+# install some prerequisites
 RUN apt-get install -y software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
@@ -21,7 +24,7 @@ RUN apt-get install -y software-properties-common curl build-essential \
 # add some repositories
 RUN apt-add-repository ppa:nginx/stable -y && \
     apt-add-repository ppa:rwky/redis -y && \
-    apt-add-repository ppa:ondrej/php-7.0 -y && \
+    apt-add-repository ppa:ondrej/php -y && \
     apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 5072E1F5 && \
     sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7" >> /etc/apt/sources.list.d/mysql.list' && \
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
@@ -54,9 +57,9 @@ VOLUME ["/var/log/nginx"]
 EXPOSE 80 443
 
 # install php
-RUN apt-get install -y --force-yes php7.0-cli php7.0-fpm php7.0-dev php-pgsql \
-    php-sqlite3 php-gd php-apcu php-curl php-imap php-mysql php-memcached \
-    php7.0-readline php-xdebug
+RUN apt-get install -y --force-yes php7.0-fpm php7.0-cli php7.0-dev php7.0-pgsql php7.0-sqlite3 php7.0-gd \
+    php-apcu php7.0-curl php7.0-mcrypt php7.0-imap php7.0-mysql php7.0-readline php-xdebug php-common \
+    php7.0-mbstring php7.0-xml php7.0-zip
 RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini && \
     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini && \
     sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini && \
@@ -87,7 +90,8 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf # && \
+    # echo "CREATE DATABASE $DB_NAME;" | mysql -uroot -p$DB_PASS
 EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
@@ -113,6 +117,10 @@ RUN /usr/bin/npm install -g bower
 
 # install redis 
 RUN apt-get install -y redis-server
+EXPOSE 6379
+
+# install blackfire
+RUN apt-get install -y blackfire-agent blackfire-php
 
 # install supervisor
 RUN apt-get install -y supervisor && \
