@@ -109,7 +109,8 @@ RUN apt-get install -y nodejs
 RUN /usr/bin/npm install -g gulp
 
 # install bower
-RUN /usr/bin/npm install -g bower
+RUN /usr/bin/npm install -g bower && \
+    echo 'alias bower="bower --allow-root"' | tee -a ~/.bashrc
 
 # install redis 
 RUN apt-get install -y redis-server
