@@ -91,6 +91,17 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
 EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
+# install composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.profile
+
+# install laravel envoy
+RUN composer global require "laravel/envoy"
+
+#install laravel installer
+RUN composer global require "laravel/installer"
+
 # install supervisor
 RUN apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor
