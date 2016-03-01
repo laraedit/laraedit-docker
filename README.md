@@ -11,3 +11,19 @@ For now you can [check out the wiki](https://github.com/laraedit/laraedit-docker
 
 # Build Information
 You can find the latest build details on the [Docker Hub](https://hub.docker.com/r/laraedit/laraedit/)
+
+# What works
+- [x] Nginx 1.8.1
+- [x] PHP 7.0
+- [x] MySQL 5.7
+- [ ] Redis
+- [ ] NodeJS
+- [ ] PostreSQL
+- [ ] Blackfire
+- [ ] Bower
+- [ ] Gulp
+- [ ] Composer
+- [ ] Laravel Envoy
+- [ ] Laravel Installer
+- [ ] Lumen Installer
+- [x] SQLite
