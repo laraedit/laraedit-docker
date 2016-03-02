@@ -36,11 +36,11 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
   3. Point the `/var/www/html/app` volume to your local application directory.
 
 ### CLI (the other easy way)
-  - 1. Pull in the image
+  1. Pull in the image
   ```
     docker pull laraedit/laraedit
   ```  
-  - 2. Run the container
+  2. Run the container
   ```
     docker run laraedit/laraedit -p 80:80 /path/to/your/app:/var/www/html/app
   ```
