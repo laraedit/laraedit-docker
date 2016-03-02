@@ -99,6 +99,9 @@ VOLUME ["/var/lib/mysql"]
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc
+    
+# install prestissimo
+RUN composer global require "hirak/prestissimo"
 
 # install laravel envoy
 RUN composer global require "laravel/envoy"
