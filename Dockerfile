@@ -54,7 +54,6 @@ RUN rm -rf /etc/nginx/sites-available/default && \
 VOLUME ["/var/www/html/app"]
 VOLUME ["/var/cache/nginx"]
 VOLUME ["/var/log/nginx"]
-EXPOSE 80 443
 
 # install php
 RUN apt-get install -y --force-yes php7.0-fpm php7.0-cli php7.0-dev php7.0-pgsql php7.0-sqlite3 php7.0-gd \
@@ -92,13 +91,15 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf # && \
     # echo "CREATE DATABASE $DB_NAME;" | mysql -uroot -p$DB_PASS
-EXPOSE 3306
 VOLUME ["/var/lib/mysql"]
 
 # install composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc
+    
+# install prestissimo
+# RUN composer global require "hirak/prestissimo"
 
 # install laravel envoy
 RUN composer global require "laravel/envoy"
@@ -117,7 +118,6 @@ RUN /usr/bin/npm install -g bower
 
 # install redis 
 RUN apt-get install -y redis-server
-EXPOSE 6379
 
 # install blackfire
 RUN apt-get install -y blackfire-agent blackfire-php
@@ -137,6 +137,9 @@ RUN apt-get remove --purge -y software-properties-common && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/man/?? && \
     rm -rf /usr/share/man/??_*
+
+# expose ports
+EXPOSE 80 443 3306 6379
 
 # set container entrypoints
 ENTRYPOINT ["/bin/bash","-c"]
