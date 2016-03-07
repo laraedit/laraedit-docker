@@ -37,7 +37,7 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
   ```  
   2. Run the container
   ```
-    docker run laraedit/laraedit -p 80:80 /path/to/your/app:/var/www/html/app
+    docker run -p 80:80 /path/to/your/app:/var/www/html/app laraedit/laraedit
   ```
   
 #
