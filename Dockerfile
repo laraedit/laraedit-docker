@@ -86,12 +86,12 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
-RUN mysql -h --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
-    mysql -h --user="root" --password="secret" -e "CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret';" && \
-    mysql -h --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
-    mysql -h --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
-    mysql -h --user="root" --password="secret" -e "FLUSH PRIVILEGES;" && \
-    mysql -h --user="root" --password="secret" -e "CREATE DATABASE homestead;"
+RUN mysql -h 127.0.0.1 --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql -h 127.0.0.1 --user="root" --password="secret" -e "CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret';" && \
+    mysql -h 127.0.0.1 --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql -h 127.0.0.1 --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql -h 127.0.0.1 --user="root" --password="secret" -e "FLUSH PRIVILEGES;" && \
+    mysql -h 127.0.0.1 --user="root" --password="secret" -e "CREATE DATABASE homestead;"
 VOLUME ["/var/lib/mysql"]
 
 # install composer
