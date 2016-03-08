@@ -89,9 +89,8 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf && \
-    service mysql restart && \
-    echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'" | mysql && \
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+RUN echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';" | mysql && \
     echo "CREATE DATABASE homestead;" | mysql
 VOLUME ["/var/lib/mysql"]
 
