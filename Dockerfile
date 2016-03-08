@@ -5,10 +5,6 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
-
-ENV DB_NAME app
-ENV DB_PASS secret
-
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
@@ -90,8 +86,15 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
-RUN echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';" | mysql && \
-    echo "CREATE DATABASE homestead;" | mysql
+RUN mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    service mysql restart && \
+    mysql --user="root" --password="secret" -e "CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret';" && \
+    mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql --user="root" --password="secret" -e "GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION;" && \
+    mysql --user="root" --password="secret" -e "FLUSH PRIVILEGES;" && \
+    mysql --user="root" --password="secret" -e "CREATE DATABASE homestead;" && \
+    service mysql restart && \
+    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=root --password=secret mysql
 VOLUME ["/var/lib/mysql"]
 
 # install composer
