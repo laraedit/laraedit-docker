@@ -5,10 +5,6 @@ MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 ENV APP_NAME app
 ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
-
-ENV DB_NAME app
-ENV DB_PASS secret
-
 ENV DEBIAN_FRONTEND noninteractive
 
 # upgrade the container
@@ -89,8 +85,10 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf # && \
-    # echo "CREATE DATABASE $DB_NAME;" | mysql -uroot -p$DB_PASS
+    sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+RUN /usr/sbin/mysqld & \
+    sleep 10s && \
+    echo "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret'; GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE homestead;" | mysql
 VOLUME ["/var/lib/mysql"]
 
 # install composer
