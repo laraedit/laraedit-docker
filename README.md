@@ -44,8 +44,8 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 
 # MySQL Details
 
-MySQL Username = `homestead`
-MySQL Password = `secret`
-MySQL Database = `homestead`
+- MySQL Username = `homestead`
+- MySQL Password = `secret`
+- MySQL Database = `homestead`
 
 You are free to create more databases and/or users, but these are available to you as soon as you run the container!
