@@ -40,7 +40,12 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
     docker run -p 80:80 /path/to/your/app:/var/www/html/app laraedit/laraedit
   ```
   
-#
-#
 **If you want to try the latest unstable release, replace `laraedit/laraedit` with `laraedit/laraedit:dev`**
 
+# MySQL Details
+
+- MySQL Username = `homestead`
+- MySQL Password = `secret`
+- MySQL Database = `homestead`
+
+You are free to create more databases and/or users, but these are available to you as soon as you run the container!
