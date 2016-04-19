@@ -34,6 +34,9 @@ RUN apt-add-repository ppa:nginx/stable -y && \
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
     locale-gen en_US.UTF-8  && \
     ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+    
+# setup bash
+COPY .bashrc /
 
 # install nginx
 RUN apt-get install -y --force-yes nginx
