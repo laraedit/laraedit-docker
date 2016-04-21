@@ -36,7 +36,7 @@ RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
     ln -sf /usr/share/zoneinfo/UTC /etc/localtime
     
 # setup bash
-COPY .bashrc /
+COPY .bash_aliases /root
 
 # install nginx
 RUN apt-get install -y --force-yes nginx
