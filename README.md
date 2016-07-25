@@ -15,7 +15,7 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 - [x] Redis
 - [x] NodeJS
 - [ ] PostreSQL
-- [ ] Beanstalkd
+- [x] Beanstalkd
 - [x] Blackfire
 - [x] Bower
 - [x] Gulp
