@@ -81,7 +81,7 @@ RUN phpenmod mcrypt && \
     mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
 
 # Disable XDebug On The CLI
-RUN sudo phpdismod -s cli xdebug
+RUN phpdismod -s cli xdebug
 
 # install sqlite 
 RUN apt-get install -y sqlite3 libsqlite3-dev
