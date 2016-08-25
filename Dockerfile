@@ -62,8 +62,8 @@ RUN apt-get install -y --force-yes php7.0-cli php7.0-dev php-pgsql \
 RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini && \ 
     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini && \
     sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/cli/php.ini && \
-    sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini && \
-    echo "xdebug.remote_enable = 1" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
+    sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini
+RUN echo "xdebug.remote_enable = 1" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
     echo "xdebug.remote_connect_back = 1" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
     echo "xdebug.remote_port = 9000" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
     echo "xdebug.max_nesting_level = 512" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
