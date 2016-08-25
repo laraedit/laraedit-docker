@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 # set some environment variables
@@ -10,6 +10,11 @@ ENV DEBIAN_FRONTEND noninteractive
 # upgrade the container
 RUN apt-get update && \
     apt-get upgrade -y
+    
+# set the locale
+RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
+    locale-gen en_US.UTF-8  && \
+    ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # install some prerequisites
 RUN apt-get install -y software-properties-common curl build-essential \
@@ -18,23 +23,17 @@ RUN apt-get install -y software-properties-common curl build-essential \
     debconf-utils
 
 # add some repositories
-RUN apt-add-repository ppa:nginx/stable -y && \
-    apt-add-repository ppa:rwky/redis -y && \
+RUN apt-add-repository ppa:nginx/development -y && \
+    apt-add-repository ppa:chris-lea/redis-server -y && \
     apt-add-repository ppa:ondrej/php -y && \
-    apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 5072E1F5 && \
-    sh -c 'echo "deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7" >> /etc/apt/sources.list.d/mysql.list' && \
-    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
-    sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/postgresql.list' && \
     curl -s https://packagecloud.io/gpg.key | apt-key add - && \
     echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
-    curl --silent --location https://deb.nodesource.com/setup_5.x | bash - && \
+    curl --silent --location https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get update
-
-# set the locale
-RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
-    locale-gen en_US.UTF-8  && \
-    ln -sf /usr/share/zoneinfo/UTC /etc/localtime
     
+# set the timezone
+RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
 # setup bash
 COPY .bash_aliases /root
 
@@ -50,38 +49,53 @@ RUN rm -rf /etc/nginx/sites-available/default && \
     usermod -u 1000 www-data && \
     chown -Rf www-data.www-data /var/www/html/ && \
     sed -i -e"s/worker_processes  1/worker_processes 5/" /etc/nginx/nginx.conf
+COPY fastcgi_params /etc/nginx/
 VOLUME ["/var/www/html/app"]
 VOLUME ["/var/cache/nginx"]
 VOLUME ["/var/log/nginx"]
 
 # install php
-RUN apt-get install -y --force-yes php7.0-fpm php7.0-cli php7.0-dev php7.0-pgsql php7.0-sqlite3 php7.0-gd \
-    php-apcu php7.0-curl php7.0-mcrypt php7.0-imap php7.0-mysql php7.0-readline php-xdebug php-common \
-    php7.0-mbstring php7.0-xml php7.0-zip
-RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini && \
+RUN apt-get install -y --force-yes php7.0-cli php7.0-dev php-pgsql \
+    php-sqlite3 php-gd php-apcu php-curl php7.0-mcrypt php-imap \
+    php-mysql php-memcached php7.0-readline php-xdebug php-mbstring \
+    php-xml php7.0-zip php7.0-intl php7.0-bcmath php-soap 
+RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini && \ 
     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini && \
+    sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/cli/php.ini && \
     sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini && \
+    echo "xdebug.remote_enable = 1" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
+    echo "xdebug.remote_connect_back = 1" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
+    echo "xdebug.remote_port = 9000" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
+    echo "xdebug.max_nesting_level = 512" >> /etc/php/7.0/fpm/conf.d/20-xdebug.ini && \
     sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/fpm/php.ini && \
     sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/fpm/php.ini && \
     sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini && \
+    sed -i "s/memory_limit = .*/memory_limit = 512M/" /etc/php/7.0/fpm/php.ini && \
     sed -i "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php/7.0/fpm/php.ini && \
     sed -i "s/post_max_size = .*/post_max_size = 100M/" /etc/php/7.0/fpm/php.ini && \
-    sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/fpm/php.ini && \
-    sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php/7.0/fpm/php-fpm.conf && \
-    sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php/7.0/fpm/pool.d/www.conf && \
-    find /etc/php/7.0/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
-COPY fastcgi_params /etc/nginx/
+    sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/fpm/php.ini
+RUN phpdismod -s cli xdebug
 RUN phpenmod mcrypt && \
     mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
+    
+# install composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc 
+    
+# install laravel envoy
+RUN composer global require "laravel/envoy"
 
-# Disable XDebug On The CLI
-RUN phpdismod -s cli xdebug
+# install laravel installer
+RUN composer global require "laravel/installer"
+
+# install lumen installer
+RUN composer global require "laravel/lumen-installer"
+
+# install nodejs
+RUN apt-get install -y nodejs && \
+    /usr/bin/npm install -g gulp && \
+    /usr/bin/npm install -g bower
 
 # install sqlite 
 RUN apt-get install -y sqlite3 libsqlite3-dev
@@ -92,33 +106,13 @@ RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set
     apt-get install -y mysql-server && \
     echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
     sed -i '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
-RUN /usr/sbin/mysqld & \
+RUN /usr/sbin/mysqld && \
     sleep 10s && \
     echo "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret'; GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE homestead;" | mysql
 VOLUME ["/var/lib/mysql"]
 
-# install composer
-RUN curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer && \
-    printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc
-    
-# install prestissimo
-# RUN composer global require "hirak/prestissimo"
-
-# install laravel envoy
-RUN composer global require "laravel/envoy"
-
-#install laravel installer
-RUN composer global require "laravel/installer"
-
-# install nodejs
-RUN apt-get install -y nodejs
-
-# install gulp
-RUN /usr/bin/npm install -g gulp
-
-# install bower
-RUN /usr/bin/npm install -g bower
+# install postgres
+RUN apt-get install -y postgresql
 
 # install redis 
 RUN apt-get install -y redis-server
@@ -131,6 +125,12 @@ RUN apt-get install -y --force-yes beanstalkd && \
     sed -i "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd && \
     sed -i "s/#START=yes/START=yes/" /etc/default/beanstalkd && \
     /etc/init.d/beanstalkd start
+
+# restart services
+RUN service nginx restart && \
+    service php7.0-fpm restart && \
+    service mysql restart && \
+    service postgresql restart
 
 # install supervisor
 RUN apt-get install -y supervisor && \
