@@ -12,15 +12,15 @@ RUN apt-get update && \
     apt-get upgrade -y
     
 # set the locale
-RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
-    locale-gen en_US.UTF-8  && \
-    ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+# RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
+#     locale-gen en_US.UTF-8  && \
+#     ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # install some prerequisites
 RUN apt-get install -y software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
-    debconf-utils
+    debconf-utils apt-utils
 
 # add some repositories
 RUN apt-add-repository ppa:nginx/development -y && \
