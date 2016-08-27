@@ -57,7 +57,7 @@ VOLUME ["/var/log/nginx"]
 RUN apt-get install -y --force-yes php7.0-cli php7.0-dev php-pgsql \
     php-sqlite3 php-gd php-apcu php-curl php7.0-mcrypt php-imap \
     php-mysql php-memcached php7.0-readline php-xdebug php-mbstring \
-    php-xml php7.0-zip php7.0-intl php7.0-bcmath php-soap 
+    php-xml php7.0-zip php7.0-intl php7.0-bcmath php-soap php7.0-fpm
 RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini
 RUN sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini 
 RUN sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini 
