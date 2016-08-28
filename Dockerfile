@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM laraedit/base
 MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 # set some environment variables
@@ -10,32 +10,14 @@ ENV DEBIAN_FRONTEND noninteractive
 # upgrade the container
 RUN apt-get update && \
     apt-get upgrade -y
-    
-# set the locale
-RUN echo "LC_ALL=en_US.UTF-8" >> /etc/default/locale  && \
-    locale-gen en_US.UTF-8  && \
-    ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-
-# install some prerequisites
-RUN apt-get install -y software-properties-common curl build-essential \
-    dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
-    python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
-    debconf-utils
 
 # add some repositories
 RUN apt-add-repository ppa:nginx/development -y && \
     apt-add-repository ppa:chris-lea/redis-server -y && \
-    apt-add-repository ppa:ondrej/php -y && \
+    LC_ALL=en_US.UTF-8 add-apt-repository -y ppa:ondrej/php && \
     curl -s https://packagecloud.io/gpg.key | apt-key add - && \
     echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
     curl --silent --location https://deb.nodesource.com/setup_6.x | bash - && \
-    apt-get update
-    
-# set the timezone
-RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-
-# setup bash
-COPY .bash_aliases /root
 
 # install nginx
 RUN apt-get install -y --force-yes nginx
@@ -58,24 +40,24 @@ VOLUME ["/var/log/nginx"]
 RUN apt-get install -y --force-yes php7.0-cli php7.0-dev php-pgsql \
     php-sqlite3 php-gd php-apcu php-curl php7.0-mcrypt php-imap \
     php-mysql php-memcached php7.0-readline php-xdebug php-mbstring \
-    php-xml php7.0-zip php7.0-intl php7.0-bcmath php-soap 
-RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini
-RUN sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini 
-RUN sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini 
-RUN sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/fpm/php.ini 
-RUN sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/fpm/php.ini 
-RUN sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini
-RUN sed -i "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php/7.0/fpm/php.ini
-RUN sed -i "s/post_max_size = .*/post_max_size = 100M/" /etc/php/7.0/fpm/php.ini 
-RUN sed -i "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/fpm/php.ini 
+    php-xml php7.0-zip php7.0-intl php7.0-bcmath php-soap php7.0-fpm
+RUN sed -i -e "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/cli/php.ini && \
+    sed -i -e "s/display_errors = .*/display_errors = On/" /etc/php/7.0/cli/php.ini && \
+    sed -i -e "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/cli/php.ini
+RUN sed -i -e "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/fpm/php.ini && \ 
+    sed -i -e "s/display_errors = .*/display_errors = On/" /etc/php/7.0/fpm/php.ini && \ 
+    sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php/7.0/fpm/php.ini && \
+    sed -i -e "s/upload_max_filesize = .*/upload_max_filesize = 100M/" /etc/php/7.0/fpm/php.ini && \
+    sed -i -e "s/post_max_size = .*/post_max_size = 100M/" /etc/php/7.0/fpm/php.ini && \ 
+    sed -i -e "s/;date.timezone.*/date.timezone = UTC/" /etc/php/7.0/fpm/php.ini
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php/7.0/fpm/php-fpm.conf
-RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php/7.0/fpm/pool.d/www.conf
+RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_children = 5/pm.max_children = 9/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.start_servers = 2/pm.start_servers = 3/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/pm.max_requests = 500/pm.max_requests = 200/g" /etc/php/7.0/fpm/pool.d/www.conf && \
+    sed -i -e "s/;listen.mode = 0660/listen.mode = 0750/g" /etc/php/7.0/fpm/pool.d/www.conf
 RUN find /etc/php/7.0/cli/conf.d/ -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 RUN phpdismod -s cli xdebug
 RUN phpenmod mcrypt && \
@@ -106,9 +88,7 @@ RUN apt-get install -y sqlite3 libsqlite3-dev
 # install mysql 
 RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set-selections;\
     echo mysql-server mysql-server/root_password_again password $DB_PASS | debconf-set-selections;\
-    apt-get install -y mysql-server && \
-    echo "default_password_lifetime = 0" >> /etc/mysql/my.cnf && \
-    sed -i -e '/^bind-address/s/bind-address.*=.*/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+    apt-get install -y mysql-server
 RUN /usr/sbin/mysqld && \
     sleep 10s && \
     echo "GRANT ALL ON *.* TO root@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; CREATE USER 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret'; GRANT ALL ON *.* TO 'homestead'@'0.0.0.0' IDENTIFIED BY 'secret' WITH GRANT OPTION; GRANT ALL ON *.* TO 'homestead'@'%' IDENTIFIED BY 'secret' WITH GRANT OPTION; FLUSH PRIVILEGES; CREATE DATABASE homestead;" | mysql
@@ -126,14 +106,7 @@ RUN apt-get install -y blackfire-agent blackfire-php
 # install beanstalkd
 RUN apt-get install -y --force-yes beanstalkd && \
     sed -i -e "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd && \
-    sed -i -e "s/#START=yes/START=yes/" /etc/default/beanstalkd && \
-    /etc/init.d/beanstalkd start
-
-# restart services
-RUN service nginx restart && \
-    service php7.0-fpm restart && \
-    service mysql restart && \
-    service postgresql restart
+    sed -i -e "s/#START=yes/START=yes/" /etc/default/beanstalkd
 
 # install supervisor
 RUN apt-get install -y supervisor && \
