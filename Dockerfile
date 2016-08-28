@@ -1,4 +1,4 @@
-FROM laraedit/base
+FROM laraedit/base:dev
 MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 # set some environment variables
