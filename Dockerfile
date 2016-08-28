@@ -7,10 +7,6 @@ ENV APP_EMAIL app@laraedit.com
 ENV APP_DOMAIN app.dev
 ENV DEBIAN_FRONTEND noninteractive
 
-# upgrade the container
-RUN apt-get update && \
-    apt-get upgrade -y
-
 # add some repositories
 RUN apt-add-repository ppa:nginx/development -y && \
     apt-add-repository ppa:chris-lea/redis-server -y && \
@@ -18,6 +14,7 @@ RUN apt-add-repository ppa:nginx/development -y && \
     curl -s https://packagecloud.io/gpg.key | apt-key add - && \
     echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
     curl --silent --location https://deb.nodesource.com/setup_6.x | bash - && \
+    apt-get update
 
 # install nginx
 RUN apt-get install -y --force-yes nginx
