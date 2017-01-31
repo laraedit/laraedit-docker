@@ -14,7 +14,7 @@ You can find the latest build details on the [Docker Hub](https://hub.docker.com
 - [x] MySQL 5.7
 - [x] Redis
 - [x] NodeJS
-- [ ] PostreSQL
+- [ ] PostgreSQL
 - [x] Beanstalkd
 - [x] Blackfire
 - [x] Bower
