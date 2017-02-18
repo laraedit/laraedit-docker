@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER Boys From The Factory <developers@boysfromthefactory.co.nz>
+MAINTAINER Derek Bourgeois <derek@ibourgeois.com>
 
 # set some environment variables
 ENV APP_NAME app
