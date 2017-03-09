@@ -21,6 +21,8 @@ RUN apt-get install -y software-properties-common curl build-essential \
 RUN curl -s https://packagecloud.io/gpg.key | apt-key add - && \
     echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
     curl --silent --location https://deb.nodesource.com/setup_6.x | bash - && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update
 
 # set the locale
@@ -74,8 +76,8 @@ RUN phpenmod mcrypt && \
     mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
 
 # install sqlite 
-RUN apt-get install -y --force-yes  sqlite3 libsqlite3-dev
-RUN apt-get install -y --force-yes  redis-server
+RUN apt-get install -y --force-yes sqlite3 libsqlite3-dev
+RUN apt-get install -y --force-yes redis-server
 RUN apt-get install -y --force-yes postgresql postgresql-contrib
 
 # install mysql 
@@ -113,9 +115,6 @@ RUN /usr/bin/npm install -g gulp
 # install bower
 RUN /usr/bin/npm install -g bower
 
-# install redis 
-RUN apt-get install -y redis-server
-
 # install blackfire
 RUN apt-get install -y blackfire-agent blackfire-php
 
@@ -130,6 +129,9 @@ RUN apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 VOLUME ["/var/log/supervisor"]
+
+# install yarn
+RUN apt-get install -y yarn
 
 # clean up our mess
 RUN apt-get remove --purge -y software-properties-common && \
