@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN apt-get install -y software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
-    debconf-utils locales libpng-dev
+    debconf-utils locales libpng-dev rsync
 
 # add some repositories
 RUN curl -s https://packagecloud.io/gpg.key | apt-key add - && \
