@@ -18,8 +18,8 @@ RUN apt-get install -y software-properties-common curl build-essential \
     debconf-utils locales libpng-dev rsync
 
 # add some repositories
-RUN curl -s https://packagecloud.io/gpg.key | apt-key add - && \
-    echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
+RUN wget -q -O - https://packages.blackfire.io/gpg.key | sudo apt-key add - && \
+    echo "deb http://packages.blackfire.io/debian any main" | sudo tee /etc/apt/sources.list.d/blackfire.list && \
     curl --silent --location https://deb.nodesource.com/setup_8.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
