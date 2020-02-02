@@ -15,12 +15,10 @@ RUN apt-get update && \
 RUN apt-get install -y software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
-    debconf-utils locales libpng-dev rsync
+    debconf-utils locales libpng-dev rsync unzip
 
 # add some repositories
-RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - && \
-    echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list && \
-    curl --silent --location https://deb.nodesource.com/setup_8.x | bash - && \
+RUN curl --silent --location https://deb.nodesource.com/setup_10.x | bash - && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update
@@ -56,10 +54,8 @@ RUN apt-get install -y --force-yes php-fpm php-cli php-dev php-pgsql php-sqlite3
 COPY fastcgi_params /etc/nginx/
 RUN mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
 
-# install sqlite 
-RUN apt-get install -y --force-yes sqlite3 libsqlite3-dev
-RUN apt-get install -y --force-yes redis-server
-RUN apt-get install -y --force-yes postgresql postgresql-contrib
+# install node and databases 
+RUN apt-get install -y --force-yes nodejs sqlite3 libsqlite3-dev redis-server postgresql postgresql-contrib
 
 # install mysql 
 RUN echo mysql-server mysql-server/root_password password $DB_PASS | debconf-set-selections;\
@@ -79,22 +75,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     printf "\nPATH=\"~/.composer/vendor/bin:\$PATH\"\n" | tee -a ~/.bashrc
     
 # install laravel envoy
-RUN composer global require "laravel/envoy"
-
-#install laravel installer
-RUN composer global require "laravel/installer"
-
-# install nodejs
-RUN apt-get install -y nodejs
-
-# install gulp
-RUN /usr/bin/npm install -g gulp
-
-# install bower
-RUN /usr/bin/npm install -g bower
-
-# install blackfire
-RUN apt-get install -y blackfire-agent blackfire-php
+RUN composer global require "laravel/envoy" "laravel/installer"
 
 # install beanstalkd
 RUN apt-get install -y --force-yes beanstalkd && \
