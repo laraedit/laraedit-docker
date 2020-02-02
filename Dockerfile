@@ -78,10 +78,10 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 RUN composer global require "laravel/envoy" "laravel/installer"
 
 # install beanstalkd
-RUN apt-get install --assume-yes --allow-downgrades --allow-remove-essential --allow-change-held-packages beanstalkd && \
-    sed -i "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd && \
-    sed -i "s/#START=yes/START=yes/" /etc/default/beanstalkd && \
-    /etc/init.d/beanstalkd start
+# RUN apt-get install --assume-yes --allow-downgrades --allow-remove-essential --allow-change-held-packages beanstalkd && \
+#     sed -i "s/BEANSTALKD_LISTEN_ADDR.*/BEANSTALKD_LISTEN_ADDR=0.0.0.0/" /etc/default/beanstalkd && \
+#     sed -i "s/#START=yes/START=yes/" /etc/default/beanstalkd && \
+#     /etc/init.d/beanstalkd start
 
 # install supervisor
 RUN apt-get install --assume-yes supervisor && \
