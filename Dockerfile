@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN apt-get install --assume-yes software-properties-common curl build-essential \
     dos2unix gcc git libmcrypt4 libpcre3-dev memcached make python2.7-dev \
     python-pip re2c unattended-upgrades whois vim libnotify-bin nano wget \
-    debconf-utils locales libpng-dev rsync unzip
+    debconf-utils locales libpng-dev rsync unzip imagemagick
 
 # add some repositories
 RUN curl --silent --location https://deb.nodesource.com/setup_10.x | bash - && \
@@ -50,7 +50,7 @@ VOLUME ["/var/log/nginx"]
 # install php
 RUN apt-get install --assume-yes --allow-downgrades --allow-remove-essential --allow-change-held-packages php-fpm php-cli php-dev php-pgsql php-sqlite3 php-gd \
     php-apcu php-curl php-imap php-mysql php-readline php-xdebug php-common \
-    php-mbstring php-xml php-zip php-bcmath php-soap
+    php-mbstring php-xml php-zip php-bcmath php-soap php-imagick
 COPY fastcgi_params /etc/nginx/
 RUN mkdir -p /run/php/ && chown -Rf www-data.www-data /run/php
 
