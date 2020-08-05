@@ -19,7 +19,7 @@ RUN apt-get install --assume-yes software-properties-common curl build-essential
 
 # add some repositories
 RUN curl --silent --location https://deb.nodesource.com/setup_10.x | bash - && \
-    sudo add-apt-repository ppa:ondrej/php && \
+    add-apt-repository ppa:ondrej/php && \
     apt-get update
 
 # set the locale
