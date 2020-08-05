@@ -19,8 +19,7 @@ RUN apt-get install --assume-yes software-properties-common curl build-essential
 
 # add some repositories
 RUN curl --silent --location https://deb.nodesource.com/setup_10.x | bash - && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    sudo add-apt-repository ppa:ondrej/php && \
     apt-get update
 
 # set the locale
@@ -88,9 +87,6 @@ RUN apt-get install --assume-yes supervisor && \
     mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 VOLUME ["/var/log/supervisor"]
-
-# install yarn
-RUN apt-get install --assume-yes yarn
 
 # clean up our mess
 RUN apt-get remove --purge --assume-yes software-properties-common && \
